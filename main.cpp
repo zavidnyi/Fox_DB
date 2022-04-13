@@ -1,17 +1,12 @@
 #include <QApplication>
-#include <QPushButton>
+#include "notes.h"
 
 int main(int argc, char **argv)
 {
     QApplication app (argc, argv);
-    QFont font ("Courier");
 
-    QPushButton button;
-    button.setText("Fox");
-    button.setToolTip("Ahhhh.....FoX");
-    button.setFont(font);
-    button.setIcon(QIcon::fromTheme("face-smile"));
-    button.show();
+    Notes *note = new Notes();
 
+    note->show();
     return app.exec();
-}
+    }
