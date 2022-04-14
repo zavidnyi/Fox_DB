@@ -1,12 +1,12 @@
 #include <QApplication>
-#include "notes.h"
+#include "mainscreen.h"
 
 int main(int argc, char **argv)
 {
     QApplication app (argc, argv);
 
-    Notes *note = new Notes();
+    mainscreen *ms = new mainscreen();
 
-    note->show();
+    ms->show();
     return app.exec();
     }
