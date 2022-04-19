@@ -13,6 +13,7 @@ class mainscreen : public QWidget
 public:
     explicit mainscreen(QWidget *parent = nullptr);
 private:
+
     QLabel *name;
     QVBoxLayout *vstack;
     QHBoxLayout *hstack;

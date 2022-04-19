@@ -2,9 +2,10 @@
 #define NOTES_H
 
 #include <QWidget>
-#include <QTextEdit>
+#include <QPlainTextEdit>
 #include <QLabel>
 #include <QVBoxLayout>
+#include <QPushButton>
 
 class Notes : public QWidget
 {
@@ -13,10 +14,13 @@ public:
     explicit Notes(QWidget *parent = nullptr);
 private:
     QLabel *header;
-    QTextEdit *text;
+    QPlainTextEdit *title;
+    QPlainTextEdit *text;
+    QPushButton *saveButton;
     QVBoxLayout *vstack;
-signals:
 
+private slots:
+     void saveNote();
 };
 
 #endif // NOTES_H

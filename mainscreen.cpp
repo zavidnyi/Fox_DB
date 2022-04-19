@@ -1,4 +1,5 @@
 #include "mainscreen.h"
+#include "notes.h"
 
 mainscreen::mainscreen(QWidget *parent)
     : QWidget{parent}
@@ -14,6 +15,7 @@ mainscreen::mainscreen(QWidget *parent)
     workouts = new QPushButton("Workouts App", this);
     cookbook = new QPushButton("Cookbook App", this);
     reminders = new QPushButton("Reminders App", this);
+
     hstack = new QHBoxLayout(this);
     hstack->addWidget(notes);
     hstack->addWidget(workouts);
@@ -23,5 +25,7 @@ mainscreen::mainscreen(QWidget *parent)
 }
 
 void mainscreen::openNotes() {
-    notes->setText("clciked");
+    hide();
+    Notes *note = new Notes();
+    note->show();
 }
