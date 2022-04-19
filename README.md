@@ -1,19 +1,37 @@
 # 🦊 Fox DataBase (FDB)
 
 ## Task:
-
-Create an easily extentable personal database with comfortable CLI.
-
-## Base Features:
-
-- All user data is stored in JSON format, so that integration with web can be added
-- Comfortable console UI navigated by arrows
-- In Basic version there will be sub apps: Notes, Workout Plans, CookBook and Reminders.
-- Notes sub app functionality: adding notes, deleting notes, modifying notes and editing notes. (Note is just a text)
-- Workout Plans sub app functionality: Add a workout note (consists of Target Muscle Group, list of exercises ( with number of repetitions and sets, and used weight), modification of existing wn.
-- CookBook sub app functionality: Add a recipe with a Title, list of ingredients and cooking instructions, edit and delete recipes later.
-- Reminders functionality: Add a Reminder with text and choose time to send it ( either by email or using OS specific notifications)
-
-## Extra:
-
-- Library for JSON parsing: [https://github.com/nlohmann/json](https://github.com/nlohmann/json)
+  Create an easily extentable personal database with comfortable GUI.
+  
+## Features outline:
+  All user data is stored in cloud storage
+  
+  Intuitive GUI
+  
+  There are four sub applications: Notes, Workout Plans, CookBook and Reminders.
+         
+## Notes sub app:
+  Create, delete, edit you personal notes
+  
+## Workout Plans sub app:
+  Add workout plans consisting of individual workouts ( a set of exercises with 
+  number of sets,repetitions and used weight).
+  
+  Add a workout entry specifying which workout plan you did, which workout, ,  along with perfomed weight on each exercise.
+  
+  You can ask database to propose a weights for your next workout based on your previous perfomance
+  
+## CookBook sub app:
+  Add a recipe with a Title, list of ingredients and cooking instructions, edit and delete recipes later.
+  
+  User can ask sub app to create a shopping list based on which dishes he\she wants to cook
+  
+  User can ask sub app to offer a dish to cook based on ingredients he\she has
+  
+  
+## Reminders sub app:
+  Add a Reminder with text and choose time to send it via a system notification
+  
+## Libraries used:
+  JSON encoding/decoding
+  QT GUI libary
