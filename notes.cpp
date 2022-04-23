@@ -2,6 +2,7 @@
 #include <QJsonObject>
 #include <QGroupBox>
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 #include "editnotecomponent.h"
 
 Notes::Notes(QWidget *parent, DatabaseHandler *_dbHandler)
@@ -32,8 +33,8 @@ Notes::Notes(QWidget *parent, DatabaseHandler *_dbHandler)
     vstack->addWidget(header);
     vstack->addWidget(addNote);
     vstack->addWidget(notesScroll);
-    QString location("notes");
-    dbHandler->downloadFromDatabase(&location);
+
+    dbHandler->downloadFromDatabase(QString("notes"));
     connect(dbHandler, SIGNAL (downloadDone()), this, SLOT (updateData()));
 }
 
@@ -42,21 +43,33 @@ void Notes::updateData()
     QJsonObject json = dbHandler->notes.object();
     QLayoutItem *child;
     while ((child = notes->takeAt(0)) != 0) {
-      delete child;
+      delete child->widget();
     }
     for (const QString &key: json.keys()) {
         QJsonObject obj = json.value(key).toObject();
         qDebug() << obj;
         QString title = obj["Title"].toString();
         QString text = obj["Text"].toString();
-        QGroupBox *gBox = new QGroupBox(title,this);
-        QVBoxLayout *vbox = new QVBoxLayout;
-        vbox->addWidget(new QLabel(text, this));
+
         QPushButton *editBtn = new QPushButton("Edit", this);
         connect(editBtn, &QPushButton::clicked, this, [this, key, title, text]{openEditNote(key, title, text);});
+
+        QPushButton *deleteBtn = new QPushButton("Delete", this);
+        connect(deleteBtn, &QPushButton::clicked, dbHandler, [this,key]{dbHandler->deleteEntry("notes", key);});
+
+        QHBoxLayout *buttons = new QHBoxLayout;
+        buttons->addWidget(editBtn);
+        buttons->addWidget(deleteBtn);
+
+        QVBoxLayout *vbox = new QVBoxLayout;
+        vbox->addWidget(new QLabel(text, this));
         vbox->addWidget(editBtn);
+        vbox->addLayout(buttons);
+
+        QGroupBox *gBox = new QGroupBox(title,this);
         gBox->setLayout(vbox);
-        gBox->setMinimumSize(600, 80);
+        gBox->setMinimumSize(600, 150);
+
         notes->addWidget(gBox, 0, Qt::AlignTop);
     }
 }

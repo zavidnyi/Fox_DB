@@ -12,9 +12,12 @@ DatabaseHandler::DatabaseHandler(QObject *parent)
 //    connect(networkReply, SIGNAL(readyRead()), this, SLOT (networkReplyReadyToRead()));
 }
 
-void DatabaseHandler::uploadToDatabase(const QJsonDocument &jsonDoc, QString *location)
+void DatabaseHandler::uploadToDatabase(const QJsonDocument &jsonDoc, const QString &location)
 {
-    QNetworkRequest newRequest( QUrl("https://foxdb-2b7f2-default-rtdb.europe-west1.firebasedatabase.app/notes.json"));
+    QString url(dbUrl);
+    url.append(location);
+    url.append(".json");
+    QNetworkRequest newRequest = QNetworkRequest( QUrl(url));
     newRequest.setHeader(QNetworkRequest::ContentTypeHeader, QString("application/json"));
     try {
         networkReply = networkManager->post(newRequest, jsonDoc.toJson());
@@ -23,25 +26,64 @@ void DatabaseHandler::uploadToDatabase(const QJsonDocument &jsonDoc, QString *lo
     {
         qDebug() << e.what(); // information from length_error printed
     }
-    connect(networkReply, SIGNAL(readyRead()), this, SLOT (networkReplyReadyToRead()));
+    connect(networkReply, &QNetworkReply::readyRead, this, [this, location]{uploadDone(location);});
 }
 
-void DatabaseHandler::downloadFromDatabase(QString *location)
+void DatabaseHandler::downloadFromDatabase(const QString &location)
 {
-    QNetworkRequest newRequest( QUrl("https://foxdb-2b7f2-default-rtdb.europe-west1.firebasedatabase.app/notes.json"));
+    QString url(dbUrl);
+    url.append(location);
+    url.append(".json");
+    QNetworkRequest newRequest = QNetworkRequest( QUrl(url) );
     networkReply = networkManager->get(newRequest);
     downloadLocation = location;
-    connect(networkReply, SIGNAL(readyRead()), this, SLOT (setData()));
+    connect(networkReply, &QNetworkReply::readyRead, this, [this, location]{setData(location);});
 }
-void DatabaseHandler::networkReplyReadyToRead()
+
+void DatabaseHandler::updateEntry(const QJsonDocument &jsonDoc, const QString &location, const QString &id)
+{
+    QString url(dbUrl);
+    url.append(location);
+    url.append("/");
+    url.append(id);
+    url.append(".json");
+
+    QNetworkRequest newRequest = QNetworkRequest( QUrl(url) );
+    newRequest.setHeader(QNetworkRequest::ContentTypeHeader, QString("application/json"));
+
+    networkReply = networkManager->put(newRequest, jsonDoc.toJson());
+    connect(networkReply, &QNetworkReply::readyRead, this, [this, location]{uploadDone(location);});
+}
+
+
+void DatabaseHandler::uploadDone(const QString &location)
 {
     qDebug() << networkReply->readAll();
+    downloadFromDatabase(location);
+}
+
+void DatabaseHandler::setData(const QString &location)
+{
+    qDebug() << downloadLocation;
+    if (location == "notes") {
+        notes = QJsonDocument::fromJson(networkReply->readAll());
+    }
     emit downloadDone();
 }
 
-void DatabaseHandler::setData()
+void DatabaseHandler::deleteEntry(const QString &location, const QString &id)
 {
-    qDebug() << downloadLocation;
-    notes = QJsonDocument::fromJson(networkReply->readAll());
-    emit downloadDone();
+    QString url(dbUrl);
+    url.append(location);
+    if (id.length() > 0) {
+        url.append("/");
+        url.append(id);
+    }
+    url.append(".json");
+
+    QNetworkRequest newRequest = QNetworkRequest( QUrl(url) );
+
+
+    networkReply = networkManager->deleteResource(newRequest);
+    connect(networkReply, &QNetworkReply::readyRead, this, [this, location]{uploadDone(location);});
 }

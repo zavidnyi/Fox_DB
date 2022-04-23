@@ -7,7 +7,7 @@
 EditNoteComponent::EditNoteComponent(
             QWidget *parent,
             DatabaseHandler *_dbHandler,
-            const QString &id,
+            const QString &curId,
             const QString &curTitle,
             const QString &curText
         )
@@ -15,6 +15,7 @@ EditNoteComponent::EditNoteComponent(
 {
     setAttribute( Qt::WA_DeleteOnClose, true ); // Widget will be deleted automatically when closed
 
+    id = curId;
     dbHandler = _dbHandler;
     setFixedSize(500, 500);
 
@@ -49,7 +50,10 @@ void EditNoteComponent::saveNote() {
     note["Text"] = text->toPlainText();
     QJsonDocument jsonDoc = QJsonDocument::fromVariant(note);
     QString location("notes");
-    dbHandler->uploadToDatabase(jsonDoc, &location);
+    if (id.length() > 0)
+        dbHandler->updateEntry(jsonDoc, location, id);
+    else
+        dbHandler->uploadToDatabase(jsonDoc, location);
     emit editClosed();
     close();
 }

@@ -14,7 +14,7 @@ class EditNoteComponent : public QWidget
 public:
     explicit EditNoteComponent(QWidget *parent = nullptr,
                                DatabaseHandler *_dbHandler = nullptr,
-                               const QString &id = "",
+                               const QString &curId = "",
                                const QString &curTitle = "",
                                const QString &curText = ""
             );
@@ -25,6 +25,7 @@ private:
     QPushButton *saveButton;
     QVBoxLayout *vstack;
     DatabaseHandler *dbHandler;
+    QString id;
 
 private slots:
      void saveNote();
