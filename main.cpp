@@ -6,10 +6,9 @@ int main(int argc, char **argv)
 {
     QApplication app (argc, argv);
 
-//    mainscreen *ms = new mainscreen();
-
     DatabaseHandler dbHandler;
+    mainscreen *ms = new mainscreen(nullptr, &dbHandler);
 
-//    ms->show();
+    ms->show();
     return app.exec();
     }

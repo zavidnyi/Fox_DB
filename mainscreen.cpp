@@ -1,9 +1,10 @@
 #include "mainscreen.h"
 #include "notes.h"
 
-mainscreen::mainscreen(QWidget *parent)
+mainscreen::mainscreen(QWidget *parent, DatabaseHandler *_dbHandler)
     : QWidget{parent}
 {
+    dbHandler = _dbHandler;
     setFixedSize(700, 500);
     name = new QLabel("🦊", this);
     name->setFont(QFont("lucida", 108));
@@ -26,6 +27,8 @@ mainscreen::mainscreen(QWidget *parent)
 
 void mainscreen::openNotes() {
     hide();
-    Notes *note = new Notes();
+    Notes *note = new Notes(nullptr, dbHandler);
     note->show();
+    connect(note, SIGNAL (editClosed()), this, SLOT (show()));
+
 }

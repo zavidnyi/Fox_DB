@@ -6,12 +6,13 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
+#include "databasehandler.h"
 
 class mainscreen : public QWidget
 {
     Q_OBJECT
 public:
-    explicit mainscreen(QWidget *parent = nullptr);
+    explicit mainscreen(QWidget *parent = nullptr, DatabaseHandler *_dbHandler = nullptr);
 private:
 
     QLabel *name;
@@ -21,6 +22,7 @@ private:
     QPushButton *workouts;
     QPushButton *cookbook;
     QPushButton *reminders;
+    DatabaseHandler *dbHandler;
 private slots:
     void openNotes();
 signals:

@@ -2,25 +2,24 @@
 #define NOTES_H
 
 #include <QWidget>
-#include <QPlainTextEdit>
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QPushButton>
+#include "databasehandler.h"
 
 class Notes : public QWidget
 {
     Q_OBJECT
 public:
-    explicit Notes(QWidget *parent = nullptr);
+    explicit Notes(QWidget *parent = nullptr, DatabaseHandler *_dbHandler = nullptr);
 private:
     QLabel *header;
-    QPlainTextEdit *title;
-    QPlainTextEdit *text;
-    QPushButton *saveButton;
     QVBoxLayout *vstack;
-
+    DatabaseHandler *dbHandler;
+    QPushButton *addNote;
 private slots:
-     void saveNote();
+    void updateData();
+    void openEditNote();
 };
 
 #endif // NOTES_H
