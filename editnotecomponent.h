@@ -12,7 +12,12 @@ class EditNoteComponent : public QWidget
 {
     Q_OBJECT
 public:
-    explicit EditNoteComponent(QWidget *parent = nullptr, DatabaseHandler *_dbHandler = nullptr);
+    explicit EditNoteComponent(QWidget *parent = nullptr,
+                               DatabaseHandler *_dbHandler = nullptr,
+                               const QString &id = "",
+                               const QString &curTitle = "",
+                               const QString &curText = ""
+            );
 private:
     QLabel *header;
     QPlainTextEdit *title;

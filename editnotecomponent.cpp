@@ -4,7 +4,13 @@
 #include <QVariantMap>
 #include <QJsonDocument>
 
-EditNoteComponent::EditNoteComponent(QWidget *parent, DatabaseHandler *_dbHandler)
+EditNoteComponent::EditNoteComponent(
+            QWidget *parent,
+            DatabaseHandler *_dbHandler,
+            const QString &id,
+            const QString &curTitle,
+            const QString &curText
+        )
     : QWidget{parent}
 {
     setAttribute( Qt::WA_DeleteOnClose, true ); // Widget will be deleted automatically when closed
@@ -17,12 +23,13 @@ EditNoteComponent::EditNoteComponent(QWidget *parent, DatabaseHandler *_dbHandle
     header->setAlignment(Qt::AlignCenter);
 
     title = new QPlainTextEdit(this);
-    title->setDocumentTitle("Title");
+    title->setPlainText(curTitle);
     QFontMetrics m (title -> font());
     int RowHeight = m.lineSpacing();
     title->setFixedHeight(1* RowHeight + 8);
 
     text = new QPlainTextEdit(this);
+    text->setPlainText(curText);
 
     saveButton = new QPushButton("Save", this);
     connect(saveButton, SIGNAL (clicked(bool)), this, SLOT (saveNote()));

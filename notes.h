@@ -5,6 +5,7 @@
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QPushButton>
+#include <QScrollArea>
 #include "databasehandler.h"
 
 class Notes : public QWidget
@@ -17,9 +18,11 @@ private:
     QVBoxLayout *vstack;
     DatabaseHandler *dbHandler;
     QPushButton *addNote;
+    QScrollArea *notesScroll;
+    QVBoxLayout *notes;
 private slots:
     void updateData();
-    void openEditNote();
+    void openEditNote(const QString &id = "", const QString &title = "", const QString &text = "");
 };
 
 #endif // NOTES_H

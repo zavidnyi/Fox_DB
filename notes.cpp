@@ -20,9 +20,18 @@ Notes::Notes(QWidget *parent, DatabaseHandler *_dbHandler)
     addNote = new QPushButton("add new", this);
     connect(addNote, SIGNAL (clicked(bool)), this, SLOT (openEditNote()));
 
+    // widget overhead is neccessary to make it scrollable
+    QWidget *widget = new QWidget(this);
+    notesScroll = new QScrollArea(this);
+    notesScroll->setWidgetResizable( true );
+    notes = new QVBoxLayout(widget);
+    widget->setLayout(notes);
+    notesScroll->setWidget(widget);
+
     vstack = new QVBoxLayout(this);
-    vstack->addWidget(header, 0, Qt::AlignTop);
-    vstack->addWidget(addNote, 0, Qt::AlignTop);
+    vstack->addWidget(header);
+    vstack->addWidget(addNote);
+    vstack->addWidget(notesScroll);
     QString location("notes");
     dbHandler->downloadFromDatabase(&location);
     connect(dbHandler, SIGNAL (downloadDone()), this, SLOT (updateData()));
@@ -31,21 +40,32 @@ Notes::Notes(QWidget *parent, DatabaseHandler *_dbHandler)
 void Notes::updateData()
 {
     QJsonObject json = dbHandler->notes.object();
-    foreach(const QJsonValue &value, json) {
-        QJsonObject obj = value.toObject();
-        QGroupBox *gBox = new QGroupBox(obj["Title"].toString(),this);
+    QLayoutItem *child;
+    while ((child = notes->takeAt(0)) != 0) {
+      delete child;
+    }
+    for (const QString &key: json.keys()) {
+        QJsonObject obj = json.value(key).toObject();
+        qDebug() << obj;
+        QString title = obj["Title"].toString();
+        QString text = obj["Text"].toString();
+        QGroupBox *gBox = new QGroupBox(title,this);
         QVBoxLayout *vbox = new QVBoxLayout;
-        vbox->addWidget(new QLabel(obj["Text"].toString(), this));
+        vbox->addWidget(new QLabel(text, this));
+        QPushButton *editBtn = new QPushButton("Edit", this);
+        connect(editBtn, &QPushButton::clicked, this, [this, key, title, text]{openEditNote(key, title, text);});
+        vbox->addWidget(editBtn);
         gBox->setLayout(vbox);
-        gBox->setFixedHeight(100);
-        vstack->addWidget(gBox, 0, Qt::AlignTop);
+        gBox->setMinimumSize(600, 80);
+        notes->addWidget(gBox, 0, Qt::AlignTop);
     }
 }
 
-void Notes::openEditNote()
+void Notes::openEditNote(const QString &id, const QString &title, const QString &text)
 {
+    qDebug() << id;
     hide();
-    EditNoteComponent *edit = new EditNoteComponent(nullptr, dbHandler);
+    EditNoteComponent *edit = new EditNoteComponent(nullptr, dbHandler, id, title, text);
     connect(edit, SIGNAL (editClosed()), this, SLOT (show()));
     edit->show();
 }
