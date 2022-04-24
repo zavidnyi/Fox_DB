@@ -12,6 +12,10 @@
 #include <QJsonObject>
 #include <QGroupBox>
 #include <QJsonArray>
+#include <QInputDialog>
+#include <QSet>
+#include <QMap>
+#include <QMessageBox>
 
 class CookBook : public QWidget
 {
@@ -26,9 +30,11 @@ private:
     QPushButton *addRecipe;
     QScrollArea *recipesScroll;
     QVBoxLayout *recipes;
+    QMap<QString, QSet<QString> > dishToIngredients;
 private slots:
     void openRecipeEdit(const QString &id = "");
     void updateRecipes();
+    void openDishProposalDialog();
 signals:
     void cookBookClosed();
 };

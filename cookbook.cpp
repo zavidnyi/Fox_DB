@@ -19,6 +19,8 @@ CookBook::CookBook(QWidget *parent, DatabaseHandler *_dbHandler)
 
 
     proposeDish = new QPushButton("Propose Dish", this);
+    connect(proposeDish, SIGNAL (clicked(bool)), this, SLOT (openDishProposalDialog()));
+
 
     createShoppingList = new QPushButton("Create Shopping List", this);
 
@@ -71,6 +73,7 @@ void CookBook::updateRecipes()
         QJsonObject obj = json.value(key).toObject();
 
         QString name = obj["Name"].toString();
+        dishToIngredients[name] = QSet<QString>();
 
         QPushButton *editBtn = new QPushButton("Edit", this);
         connect(editBtn, &QPushButton::clicked, this, [this, key]{openRecipeEdit(key);});
@@ -92,7 +95,7 @@ void CookBook::updateRecipes()
         QJsonArray ingredients = obj["Ingredients"].toArray();
         for(const auto & ing: ingredients) {
             QJsonObject ingredientData = ing.toObject();
-
+            dishToIngredients[name] += ingredientData["Name"].toString();
 
             QWidget *widget = new QWidget(this);
             QHBoxLayout *ingredientView = new QHBoxLayout(widget);
@@ -110,4 +113,28 @@ void CookBook::updateRecipes()
 
         recipes->addWidget(gBox, 0, Qt::AlignTop);
     }
+}
+
+void CookBook::openDishProposalDialog()
+{
+    QSet<QString> userStock;
+    QString feasibleDishes;
+    bool ok = true;
+    QString ingredient = "d";
+
+    while (ok && !ingredient.isEmpty()) {
+        ingredient =  QInputDialog::getText(this, tr("Add ingredient"),
+                                             tr("Ingredient:"), QLineEdit::Normal,
+                                             "", &ok);
+        userStock += ingredient;
+    }
+
+
+    for (const auto &dish: dishToIngredients.keys()) {
+        if (userStock.contains(dishToIngredients[dish]))
+            feasibleDishes += dish + "\n";
+    }
+    int ret = QMessageBox::information(this, tr("You can cook"),
+                                   "You can cook: \n" + feasibleDishes,
+                                   QMessageBox::Close);
 }
