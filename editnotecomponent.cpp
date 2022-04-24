@@ -17,7 +17,7 @@ EditNoteComponent::EditNoteComponent(
 
     id = curId;
     dbHandler = _dbHandler;
-    setFixedSize(500, 500);
+    setFixedSize(700, 500);
 
     header = new QLabel("Edit note", this);
     header->setFont(QFont("lucida", 24, QFont::Bold, false));
@@ -27,11 +27,12 @@ EditNoteComponent::EditNoteComponent(
     title->setPlainText(curTitle);
     QFontMetrics m (title -> font());
     int RowHeight = m.lineSpacing();
-    title->setFixedHeight(1* RowHeight + 8);
+    title->setFixedHeight(1* RowHeight + 8); // Title text field height is set to one line, 8 is margin
 
     text = new QPlainTextEdit(this);
     text->setPlainText(curText);
 
+    // on button click save note
     saveButton = new QPushButton("Save", this);
     connect(saveButton, SIGNAL (clicked(bool)), this, SLOT (saveNote()));
 
@@ -48,12 +49,16 @@ void EditNoteComponent::saveNote() {
     QVariantMap note;
     note["Title"] = title->toPlainText();
     note["Text"] = text->toPlainText();
+
     QJsonDocument jsonDoc = QJsonDocument::fromVariant(note);
     QString location("notes");
+
+    // if given id update note, otw. create new note
     if (id.length() > 0)
         dbHandler->updateEntry(jsonDoc, location, id);
     else
         dbHandler->uploadToDatabase(jsonDoc, location);
+
     emit editClosed();
     close();
 }

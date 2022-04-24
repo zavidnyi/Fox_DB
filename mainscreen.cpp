@@ -1,5 +1,6 @@
 #include "mainscreen.h"
 #include "notes.h"
+#include "workoutplanslist.h"
 
 mainscreen::mainscreen(QWidget *parent, DatabaseHandler *_dbHandler)
     : QWidget{parent}
@@ -13,22 +14,30 @@ mainscreen::mainscreen(QWidget *parent, DatabaseHandler *_dbHandler)
     name->setAlignment(Qt::AlignCenter);
 
     notes = new QPushButton("Notes App", this);
+    connect(notes, SIGNAL (clicked(bool)), this, SLOT (openNotes()));
+
     workouts = new QPushButton("Workouts App", this);
+    connect(workouts, SIGNAL (clicked(bool)), this, SLOT (openWorkoutPlans()));
+
     cookbook = new QPushButton("Cookbook App", this);
-    reminders = new QPushButton("Reminders App", this);
 
     hstack = new QHBoxLayout(this);
     hstack->addWidget(notes);
     hstack->addWidget(workouts);
     hstack->addWidget(cookbook);
-    hstack->addWidget(reminders);
-    connect(notes, SIGNAL (clicked(bool)), this, SLOT (openNotes()));
 }
 
 void mainscreen::openNotes() {
     hide();
     Notes *note = new Notes(nullptr, dbHandler);
     note->show();
-    connect(note, SIGNAL (editClosed()), this, SLOT (show()));
+    connect(note, SIGNAL (notesClosed()), this, SLOT (show()));
+}
 
+void mainscreen::openWorkoutPlans()
+{
+    hide();
+    WorkoutPlansList *workoutPlans = new WorkoutPlansList(nullptr, dbHandler);
+    workoutPlans->show();
+    connect(workoutPlans, SIGNAL (workoutPlansClosed()), this, SLOT (show()));
 }

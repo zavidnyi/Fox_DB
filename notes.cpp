@@ -14,6 +14,12 @@ Notes::Notes(QWidget *parent, DatabaseHandler *_dbHandler)
     setFixedWidth(700);
     setMinimumHeight(500);
 
+    QPushButton *backBtn = new QPushButton("Back", this);
+    connect(backBtn, &QPushButton::clicked, this, [this]{
+        emit notesClosed();
+        close();
+    });
+
     header = new QLabel("My notes", this);
     header->setFont(QFont("lucida", 24, QFont::Bold, false));
     header->setAlignment(Qt::AlignCenter);
@@ -34,26 +40,32 @@ Notes::Notes(QWidget *parent, DatabaseHandler *_dbHandler)
     vstack->addWidget(addNote);
     vstack->addWidget(notesScroll);
 
+    // every time we get new data from DB update view
     dbHandler->downloadFromDatabase(QString("notes"));
     connect(dbHandler, SIGNAL (downloadDone()), this, SLOT (updateData()));
 }
 
 void Notes::updateData()
-{
-    QJsonObject json = dbHandler->notes.object();
+{   
+    // delete old notes views
     QLayoutItem *child;
     while ((child = notes->takeAt(0)) != 0) {
       delete child->widget();
     }
+
+
+    QJsonObject json = dbHandler->notes.object();
     for (const QString &key: json.keys()) {
         QJsonObject obj = json.value(key).toObject();
-        qDebug() << obj;
+//        qDebug() << obj;
         QString title = obj["Title"].toString();
         QString text = obj["Text"].toString();
 
+        // edit button opens edit note component
         QPushButton *editBtn = new QPushButton("Edit", this);
         connect(editBtn, &QPushButton::clicked, this, [this, key, title, text]{openEditNote(key, title, text);});
 
+        // delete button deletes note from DB
         QPushButton *deleteBtn = new QPushButton("Delete", this);
         connect(deleteBtn, &QPushButton::clicked, dbHandler, [this,key]{dbHandler->deleteEntry("notes", key);});
 
@@ -62,8 +74,11 @@ void Notes::updateData()
         buttons->addWidget(deleteBtn);
 
         QVBoxLayout *vbox = new QVBoxLayout;
-        vbox->addWidget(new QLabel(text, this));
-        vbox->addWidget(editBtn);
+        vbox->setSizeConstraint(QLayout::SetMinimumSize);
+        QLabel *textLabel = new QLabel(text, this);
+        textLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
+        textLabel->setWordWrap(true);
+        vbox->addWidget(textLabel);
         vbox->addLayout(buttons);
 
         QGroupBox *gBox = new QGroupBox(title,this);
@@ -76,7 +91,7 @@ void Notes::updateData()
 
 void Notes::openEditNote(const QString &id, const QString &title, const QString &text)
 {
-    qDebug() << id;
+//    qDebug() << id;
     hide();
     EditNoteComponent *edit = new EditNoteComponent(nullptr, dbHandler, id, title, text);
     connect(edit, SIGNAL (editClosed()), this, SLOT (show()));

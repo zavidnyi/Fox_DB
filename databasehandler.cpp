@@ -12,10 +12,14 @@ DatabaseHandler::DatabaseHandler(QObject *parent)
 //    connect(networkReply, SIGNAL(readyRead()), this, SLOT (networkReplyReadyToRead()));
 }
 
-void DatabaseHandler::uploadToDatabase(const QJsonDocument &jsonDoc, const QString &location)
+void DatabaseHandler::uploadToDatabase(const QJsonDocument &jsonDoc, const QString &location, const QString &id)
 {
     QString url(dbUrl);
     url.append(location);
+    if (id.length() > 0) {
+        url.append("/");
+        url.append(id);
+    }
     url.append(".json");
     QNetworkRequest newRequest = QNetworkRequest( QUrl(url));
     newRequest.setHeader(QNetworkRequest::ContentTypeHeader, QString("application/json"));
@@ -34,7 +38,9 @@ void DatabaseHandler::downloadFromDatabase(const QString &location)
     QString url(dbUrl);
     url.append(location);
     url.append(".json");
+
     QNetworkRequest newRequest = QNetworkRequest( QUrl(url) );
+
     networkReply = networkManager->get(newRequest);
     downloadLocation = location;
     connect(networkReply, &QNetworkReply::readyRead, this, [this, location]{setData(location);});
@@ -64,10 +70,15 @@ void DatabaseHandler::uploadDone(const QString &location)
 
 void DatabaseHandler::setData(const QString &location)
 {
-    qDebug() << downloadLocation;
+//    qDebug() << downloadLocation;
+    QJsonDocument data = QJsonDocument::fromJson(networkReply->readAll());
+
     if (location == "notes") {
-        notes = QJsonDocument::fromJson(networkReply->readAll());
+        notes = data;
+    } else if (location.contains("workoutPlans")) {
+        workoutPlans = data;
     }
+
     emit downloadDone();
 }
 

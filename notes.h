@@ -23,6 +23,8 @@ private:
 private slots:
     void updateData();
     void openEditNote(const QString &id = "", const QString &title = "", const QString &text = "");
+signals:
+     void notesClosed();
 };
 
 #endif // NOTES_H

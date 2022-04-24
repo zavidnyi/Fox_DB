@@ -11,10 +11,16 @@ SOURCES += \
     editnotecomponent.cpp \
     main.cpp \
     mainscreen.cpp \
-    notes.cpp
+    notes.cpp \
+    workoutcreationcomponent.cpp \
+    workoutplanslist.cpp \
+    workoutplanview.cpp
 
 HEADERS += \
     databasehandler.h \
     editnotecomponent.h \
     mainscreen.h \
-    notes.h
+    notes.h \
+    workoutcreationcomponent.h \
+    workoutplanslist.h \
+    workoutplanview.h

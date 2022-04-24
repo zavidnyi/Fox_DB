@@ -21,10 +21,10 @@ private:
     QPushButton *notes;
     QPushButton *workouts;
     QPushButton *cookbook;
-    QPushButton *reminders;
     DatabaseHandler *dbHandler;
 private slots:
     void openNotes();
+    void openWorkoutPlans();
 signals:
 
 };

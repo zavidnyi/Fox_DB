@@ -12,10 +12,11 @@ class DatabaseHandler : public QObject
     Q_OBJECT
 public:
     explicit DatabaseHandler(QObject *parent = nullptr);
-    void uploadToDatabase(const QJsonDocument &jsonDoc, const QString &location);
+    void uploadToDatabase(const QJsonDocument &jsonDoc, const QString &location, const QString &id = "");
     void downloadFromDatabase(const QString &location);
     void updateEntry(const QJsonDocument &jsonDoc, const QString &location, const QString &id);
     QJsonDocument notes;
+    QJsonDocument workoutPlans;
 private:
     QNetworkAccessManager *networkManager;
     QNetworkReply *networkReply;
