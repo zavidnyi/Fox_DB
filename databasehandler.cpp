@@ -77,6 +77,8 @@ void DatabaseHandler::setData(const QString &location)
         notes = data;
     } else if (location.contains("workoutPlans")) {
         workoutPlans = data;
+    } else if (location.contains("cookbook")) {
+        cookbook = data;
     }
 
     emit downloadDone();

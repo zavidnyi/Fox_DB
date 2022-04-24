@@ -67,7 +67,7 @@ void WorkoutCreationComponent::updateData()
         QMap map = iter.value().toMap();
         qDebug() << iter.key() << " " << iter.value().toMap();
         QPushButton *deleteBtn = new QPushButton("Delete", this);
-        connect(deleteBtn, &QPushButton::clicked, dbHandler, [this,iter]{
+        connect(deleteBtn, &QPushButton::clicked, this, [this,iter]{
             exercisesMap.erase(iter);
             updateData();
         });

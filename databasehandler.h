@@ -17,6 +17,7 @@ public:
     void updateEntry(const QJsonDocument &jsonDoc, const QString &location, const QString &id);
     QJsonDocument notes;
     QJsonDocument workoutPlans;
+    QJsonDocument cookbook;
 private:
     QNetworkAccessManager *networkManager;
     QNetworkReply *networkReply;

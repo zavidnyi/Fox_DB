@@ -25,6 +25,7 @@ private:
 private slots:
     void openNotes();
     void openWorkoutPlans();
+    void openCookBook();
 signals:
 
 };

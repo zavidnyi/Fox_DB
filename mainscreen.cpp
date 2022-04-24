@@ -1,6 +1,7 @@
 #include "mainscreen.h"
 #include "notes.h"
 #include "workoutplanslist.h"
+#include "cookbook.h"
 
 mainscreen::mainscreen(QWidget *parent, DatabaseHandler *_dbHandler)
     : QWidget{parent}
@@ -20,6 +21,8 @@ mainscreen::mainscreen(QWidget *parent, DatabaseHandler *_dbHandler)
     connect(workouts, SIGNAL (clicked(bool)), this, SLOT (openWorkoutPlans()));
 
     cookbook = new QPushButton("Cookbook App", this);
+    connect(cookbook, SIGNAL (clicked(bool)), this, SLOT (openCookBook()));
+
 
     hstack = new QHBoxLayout(this);
     hstack->addWidget(notes);
@@ -40,4 +43,12 @@ void mainscreen::openWorkoutPlans()
     WorkoutPlansList *workoutPlans = new WorkoutPlansList(nullptr, dbHandler);
     workoutPlans->show();
     connect(workoutPlans, SIGNAL (workoutPlansClosed()), this, SLOT (show()));
+}
+
+void mainscreen::openCookBook(){
+    hide();
+    CookBook *ck = new CookBook(nullptr, dbHandler);
+    ck->show();
+    connect(ck, SIGNAL (cookBookClosed()), this, SLOT (show()));
+
 }
