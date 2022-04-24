@@ -17,10 +17,6 @@
   Add workout plans consisting of individual workouts ( a set of exercises with 
   number of sets,repetitions and used weight).
   
-  Add a workout entry specifying which workout plan you did, which workout, ,  along with perfomed weight on each exercise.
-  
-  You can ask database to propose a weights for your next workout based on your previous perfomance
-  
 ## CookBook sub app:
   Add a recipe with a Title, list of ingredients and cooking instructions, edit and delete recipes later.
   
