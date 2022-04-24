@@ -22,12 +22,12 @@ CookBook::CookBook(QWidget *parent, DatabaseHandler *_dbHandler)
     connect(proposeDish, SIGNAL (clicked(bool)), this, SLOT (openDishProposalDialog()));
 
 
-    createShoppingList = new QPushButton("Create Shopping List", this);
+//    createShoppingList = new QPushButton("Create Shopping List", this);
 
     QHBoxLayout *buttons = new QHBoxLayout;
     buttons->setSizeConstraint(QLayout::SetMinimumSize);
     buttons->addWidget(proposeDish);
-    buttons->addWidget(createShoppingList);
+//    buttons->addWidget(createShoppingList);
 
     addRecipe = new QPushButton("Add recipe", this);
     connect(addRecipe, SIGNAL (clicked(bool)), this, SLOT (openRecipeEdit()));
